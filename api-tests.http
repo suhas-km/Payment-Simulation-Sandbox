@@ -1,0 +1,51 @@
+@Ecommerce.Api_HostAddress = https://localhost:5001
+
+### Test 1: Create a new order (with idempotency)
+POST {{Ecommerce.Api_HostAddress}}/api/Orders
+Content-Type: application/json
+Idempotency-Key: unique-key-001
+
+{
+  "orderNumber": "ORD-TEST-001",
+  "amount": 99.99,
+  "currency": "USD"
+}
+
+### Test 2: Retry same order (idempotency test - should return cached response)
+POST {{Ecommerce.Api_HostAddress}}/api/Orders
+Content-Type: application/json
+Idempotency-Key: unique-key-001
+
+{
+  "orderNumber": "ORD-TEST-001",
+  "amount": 99.99,
+  "currency": "USD"
+}
+
+### Test 3: Create order without idempotency key (should fail with 400)
+POST {{Ecommerce.Api_HostAddress}}/api/Orders
+Content-Type: application/json
+
+{
+  "orderNumber": "ORD-FAIL",
+  "amount": 50.00,
+  "currency": "USD"
+}
+
+### Test 4: Manual webhook (requires valid HMAC signature)
+# Note: Signature must be computed as: HMAC-SHA256(secret, "t={timestamp}.{body}")
+# Format: t={timestamp},v1={hex_signature}
+POST {{Ecommerce.Api_HostAddress}}/api/webhooks/payments
+Content-Type: application/json
+X-Signature: t=1762201064,v1=ea695d8cb6a5f640198af8f870d2424b7ebdc89f68885b7f07cb98b5973f1a72
+
+{
+  "type": "payment.succeeded",
+  "data": {
+    "orderNumber": "ORD-WEBHOOK-TEST",
+    "amount": 75.00,
+    "currency": "USD"
+  }
+}
+
+###
