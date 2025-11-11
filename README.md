@@ -1,6 +1,6 @@
 # E-commerce Order & Payment Processing System
 
-ASP.NET Core 9 Web API demonstrating payment processing patterns: **idempotent APIs**, **webhook signature verification**, **async background workers**, and **MongoDB** integration.
+ASP.NET Core 9 Web API demonstrating payment mimicking patterns: **idempotent APIs**, **webhook signature verification**, **async background workers**, and **MongoDB** integration.
 
 ## 🎯 Overview
 
